@@ -15,8 +15,10 @@ class Lunch_lady
     ]
     @array_of_main = []
     @array_of_sides = []
-    @running_total = []
+    @running_total = 0
+    @wallet = 0
     @user = []
+    @meal = []
 
     @main.each do |main|
       @array_of_main << Lunch.new(main[:item], main[:price])
@@ -35,6 +37,7 @@ class Lunch_lady
     user_name = gets
     puts "and how much do you have to spend?"
     user_wallet = gets.to_i
+    @wallet += user_wallet
     @user << Person.new(user_name, user_wallet)
     @user[0].say_welcome
   end
@@ -55,9 +58,42 @@ class Lunch_lady
 
   end
 
-  def add_total
-
+  def main_selection
+    puts "Please select one item from the list by typing the number"
+    main_option = gets.to_i
+    main_option -= 1 
+    if @array_of_main[main_option].price <= @wallet
+      @wallet -= @array_of_main[main_option].price
+      @running_total += @array_of_main[main_option].price
+      puts "You have selected the #{@array_of_main[main_option].item} which is $#{@array_of_main[main_option].price}"
+      puts "You have $#{@wallet} left!" 
+    else 
+      puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
+      user_try = gets.chomp
+      if user_try == 'DONE'
+        exit(0)
+      end
+    end
   end
+
+  def side_selection
+    puts "Please select one item from the list by typing the number"
+    side_option = gets.to_i
+    side_option -= 1 
+    if @array_of_sides[side_option].price <= @wallet
+      @running_total += @array_of_sides[side_option].price
+      @wallet -= @array_of_sides[side_option].price
+      puts "You have selected the #{@array_of_sides[side_option].item} which is $#{@array_of_sides[side_option].price}"
+      puts "You have $#{@wallet} left!" 
+    else 
+      puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
+      user_try = gets.chomp
+      if user_try == 'DONE'
+        exit(0)
+      end
+    end
+  end
+
 
   def finished
     @user[0].say_enjoy
