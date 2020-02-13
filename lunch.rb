@@ -7,9 +7,4 @@ class Lunch
     @price = price 
   end
 
-  def say_item
-    puts "#{item}----$ #{price}"
-  end
-
-
 end
