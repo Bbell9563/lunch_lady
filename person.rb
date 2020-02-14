@@ -1,5 +1,3 @@
-#create a class for person
-
 class Person 
   attr_accessor :name, :wallet
   def initialize(name, wallet)
@@ -15,5 +13,8 @@ class Person
     puts "Enjoy your meal #{name}".light_green
   end
 
+  def say_bye
+    puts "Have a nice day #{name}".green.bold
+  end
 end
 
