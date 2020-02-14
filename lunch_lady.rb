@@ -42,60 +42,88 @@ class Lunch_lady
     @user[0].say_welcome
   end
 
-  def list_main
-    @array_of_main.each do |main|
-      main_index = @array_of_main.index(main) + 1
-      puts "#{main_index}) #{main.item}~ ~ ~ $#{main.price}".yellow.bold
-    end
-
-  end
-
-  def list_side
-    @array_of_sides.each do |side|
-      side_index = @array_of_sides.index(side) + 1
-      puts "#{side_index}) #{side.item}~ ~ ~ $#{side.price}".yellow.bold
-    end
-
-  end
-
   def main_selection
-    puts "Please select one item from the list by typing the number"
-    main_option = gets.to_i
-    main_option -= 1 
-    if @array_of_main[main_option].price <= @wallet
-      @wallet -= @array_of_main[main_option].price
-      @running_total += @array_of_main[main_option].price
-      puts "You have selected the #{@array_of_main[main_option].item} which is $#{@array_of_main[main_option].price}"
-      puts "You have $#{@wallet} left!" 
-    else 
-      puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
-      user_try = gets.chomp
-      if user_try == 'DONE'
-        exit(0)
+    user_selected = false
+    while user_selected == false
+      puts "Please select one items from the list by typing the number".blue
+      @array_of_main.each do |main|
+        main_index = @array_of_main.index(main) + 1
+        puts "#{main_index}) #{main.item}~ ~ ~ $#{main.price}".yellow.bold
+      end
+      main_option = gets.to_i
+      main_option -= 1 
+      if @array_of_main.include? @array_of_main[main_option]
+        if @array_of_main[main_option].price <= @wallet
+          @wallet -= @array_of_main[main_option].price
+          @running_total += @array_of_main[main_option].price
+          @meal << @array_of_main[main_option]
+          puts "You have selected the #{@array_of_main[main_option].item} which is $#{@array_of_main[main_option].price}"
+          puts "You have $#{@wallet} left!" 
+          return
+        else 
+          puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
+          user_try = gets.chomp
+          if user_try == 'DONE'
+            exit(0)
+          end
+        end
+      else  
+        puts "thats not an item on the list".red
+        user_selected == false
       end
     end
+    
   end
 
   def side_selection
-    puts "Please select one item from the list by typing the number"
-    side_option = gets.to_i
-    side_option -= 1 
-    if @array_of_sides[side_option].price <= @wallet
-      @running_total += @array_of_sides[side_option].price
-      @wallet -= @array_of_sides[side_option].price
-      puts "You have selected the #{@array_of_sides[side_option].item} which is $#{@array_of_sides[side_option].price}"
-      puts "You have $#{@wallet} left!" 
-    else 
-      puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
-      user_try = gets.chomp
-      if user_try == 'DONE'
-        exit(0)
+    user_selected = false
+    while user_selected == false
+      puts "Please select one item from the list by typing the number".blue
+      @array_of_sides.each do |side|
+        side_index = @array_of_sides.index(side) + 1
+        puts "#{side_index}) #{side.item}~ ~ ~ $#{side.price}".yellow.bold
+      end
+      side_option = gets.to_i
+      side_option -= 1 
+      if @array_of_sides.include? @array_of_sides[side_option]
+        if @array_of_sides[side_option].price <= @wallet
+          @running_total += @array_of_sides[side_option].price
+          @wallet -= @array_of_sides[side_option].price
+          @meal << @array_of_sides[side_option]
+          puts "You have selected the #{@array_of_sides[side_option].item} which is $#{@array_of_sides[side_option].price}"
+          puts "You have $#{@wallet} left!" 
+          return
+        else 
+          puts "You dont have enough! Press Enter to pick again or type 'DONE' to leave".red
+          user_try = gets.chomp
+          if user_try == 'DONE'
+            exit(0)
+          end
+        end
+      else  
+        puts "thats not an item on the list".red
+        user_selected == false
       end
     end
   end
 
+  def state_current_menu
+    puts "Your meal consist of".yellow
+    @meal.each do |item|
+      puts "#{item.item} ~~~ $#{item.price}".red
+    end
+    puts "You owe $#{@running_total}".yellow
+  end
+
+  def restart
+    @wallet = @user[0].wallet
+    @running_total = 0
+    @meal.clear
+  end 
+
 
   def finished
+    puts "you paid $#{@running_total}".red
     @user[0].say_enjoy
     puts "Have a nice day!".light_green
     exit(0)
